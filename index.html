@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sao Cũng Được</title>
-    <style>
-        /* Import font chữ Inter để tạo cảm giác hiện đại, sạch sẽ */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;700&display=swap');
+    <title>Sao Cũng Được - Interactive</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;800&display=swap" rel="stylesheet">
 
+    <style>
         :root {
-            --bg-color: #0f172a; /* Màu xanh than đậm (Slate 900) - tạo chiều sâu */
-            --text-gradient-start: #38bdf8; /* Xanh da trời nhạt */
-            --text-gradient-end: #818cf8;   /* Tím nhạt */
-            --subtitle-color: #94a3b8;      /* Xám nhạt */
+            --bg-deep: #0a0a0a;
+            --accent-color: #00d2ff; /* Màu xanh neon làm điểm nhấn */
+            --text-primary: #ffffff;
         }
 
         body, html {
@@ -20,98 +18,174 @@
             padding: 0;
             height: 100%;
             width: 100%;
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-deep);
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
+            perspective: 1000px; /* Tạo không gian 3D cho hiệu ứng nghiêng */
+        }
+
+        /* Lớp nền chuyển động (Animated Background blobs) */
+        .bg-blobs {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
             overflow: hidden;
+            filter: blur(80px); /* Làm mờ mạnh để tạo nền màu loang */
         }
 
-        .container {
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            mix-blend-mode: screen;
+            opacity: 0.4;
+            animation: float 20s infinite ease-in-out alternate;
+        }
+
+        .blob-1 {
+            background: blue;
+            width: 500px; height: 500px;
+            top: -10%; left: -10%;
+            animation-delay: 0s;
+        }
+        .blob-2 {
+            background: purple;
+            width: 400px; height: 400px;
+            bottom: -10%; right: -10%;
+            animation-delay: -5s;
+        }
+        .blob-3 {
+            background: var(--accent-color);
+            width: 300px; height: 300px;
+            bottom: 20%; left: 30%;
+            animation-delay: -10s;
+        }
+
+        /* Khối kính (Glassmorphism Card) */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05); /* Nền trắng cực mỏng */
+            backdrop-filter: blur(20px); /* Hiệu ứng mờ kính */
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Viền kính sáng nhẹ */
+            padding: 4rem 6rem;
             text-align: center;
-            opacity: 0; /* Ẩn ban đầu để tạo hiệu ứng fade-in */
-            animation: fadeIn 1.5s ease-out forwards;
-            padding: 2rem;
-        }
-
-        .main-text {
-            font-size: clamp(3rem, 8vw, 6rem); /* Responsive font size */
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: -0.02em;
-            line-height: 1.1;
-            margin: 0;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             
-            /* Kỹ thuật Gradient Text */
-            background: linear-gradient(135deg, #ffffff 30%, var(--subtitle-color) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            
-            /* Hiệu ứng bóng mờ nhẹ */
-            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            
+            /* Thiết lập cho hiệu ứng 3D tilt JS */
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out; /* Chuyển động mượt mà */
             position: relative;
         }
-
-        .main-text::after {
-            content: "WHATEVER";
+        
+        /* Hiệu ứng ánh sáng đi theo chuột trên thẻ kính */
+        .glass-card::before {
+            content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 1.5em;
-            color: rgba(255, 255, 255, 0.03);
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 24px;
+            background: radial-gradient(
+                800px circle at var(--mouse-x) var(--mouse-y), 
+                rgba(255,255,255,0.06),
+                transparent 40%
+            );
             z-index: -1;
-            white-space: nowrap;
             pointer-events: none;
         }
 
+        .main-text {
+            font-size: 5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0;
+            letter-spacing: -2px;
+            text-transform: uppercase;
+            
+            /* Tạo hiệu ứng chữ nổi lên khỏi bề mặt kính */
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transform: translateZ(60px); /* Đẩy chữ lồi lên phía trước trong không gian 3D */
+        }
+
         .sub-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.2rem;
             margin-top: 1.5rem;
-            font-size: 1.1rem;
-            font-weight: 300;
-            color: var(--subtitle-color);
-            letter-spacing: 0.1em;
+            font-weight: 400;
+            transform: translateZ(30px); /* Đẩy sub-text lồi lên nhẹ */
             position: relative;
         }
-
-        .sub-text::before {
-            content: "";
-            display: block;
-            width: 40px;
-            height: 2px;
-            background: linear-gradient(90deg, var(--text-gradient-start), var(--text-gradient-end));
-            margin: 0 auto 1rem auto;
-            border-radius: 2px;
+        
+        .sub-text span {
+             color: var(--accent-color);
+             font-weight: 800;
         }
 
-        /* Animation */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(100px, 50px) rotate(20deg); }
         }
-
-        /* Hiệu ứng Hover nhẹ */
-        .container:hover .main-text {
-            transform: scale(1.02);
-            transition: transform 0.3s ease;
+        
+        /* Responsive cho mobile */
+        @media (max-width: 768px) {
+            .glass-card { padding: 3rem 2rem; }
+            .main-text { font-size: 3rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1 class="main-text">Sao cũng được</h1>
-        <p class="sub-text">A state of calm acceptance</p>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
     </div>
 
+    <div class="glass-card" id="tiltCard">
+        <h1 class="main-text">Sao cũng được</h1>
+        <p class="sub-text">Tâm bất biến giữa dòng đời <span>vạn biến</span></p>
+    </div>
+
+    <script>
+        // JAVASCRIPT XỬ LÝ TƯƠNG TÁC 3D
+        const card = document.getElementById('tiltCard');
+        const body = document.querySelector('body');
+
+        body.addEventListener('mousemove', (e) => {
+            // 1. Xử lý hiệu ứng ánh sáng đi theo chuột
+            // Lấy vị trí chuột tương đối so với thẻ card
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+
+            // 2. Xử lý hiệu ứng nghiêng 3D (Parallax Tilt)
+            let xAxis = (window.innerWidth / 2 - e.clientX) / 25; // Chia để giảm độ nhạy
+            let yAxis = (window.innerHeight / 2 - e.clientY) / 25;
+            
+            // Giới hạn góc nghiêng để không bị quá đà
+            xAxis = Math.min(Math.max(xAxis, -20), 20);
+            yAxis = Math.min(Math.max(yAxis, -20), 20);
+
+            card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+
+        // Khi chuột rời khỏi màn hình hoặc ngừng di chuyển, trả thẻ về vị trí cân bằng
+        body.addEventListener('mouseleave', () => {
+            card.style.transform = `rotateY(0deg) rotateX(0deg)`;
+            card.style.transition = 'transform 0.5s ease';
+        });
+        
+        // Reset transition khi di chuyển lại để tránh bị giật
+        body.addEventListener('mouseenter', () => {
+             card.style.transition = 'transform 0.1s ease-out';
+        });
+
+    </script>
 </body>
 </html>
