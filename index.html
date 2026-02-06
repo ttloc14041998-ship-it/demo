@@ -3,188 +3,448 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sao Cũng Được - Interactive</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;800&display=swap" rel="stylesheet">
-
+    <title>Dr. Assistant - Clinical Tools</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-deep: #0a0a0a;
-            --accent-color: #00d2ff; /* Màu xanh neon làm điểm nhấn */
-            --text-primary: #ffffff;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent: #38bdf8; /* Sky Blue */
+            --danger: #f87171; /* Red for high risk */
+            --success: #4ade80; /* Green for safe */
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: rgba(255,255,255,0.1);
         }
 
-        body, html {
+        * { box-sizing: border-box; outline: none; }
+
+        body {
             margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            font-family: 'Montserrat', sans-serif;
-            background-color: var(--bg-deep);
-            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+        }
+
+        /* --- Header & Nav --- */
+        header {
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            perspective: 1000px; /* Tạo không gian 3D cho hiệu ứng nghiêng */
-        }
-
-        /* Lớp nền chuyển động (Animated Background blobs) */
-        .bg-blobs {
-            position: absolute;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            position: sticky;
             top: 0;
-            left: 0;
+            z-index: 100;
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .brand {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent), #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.05em;
+        }
+
+        .btn-login {
+            padding: 0.5rem 1.5rem;
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-login:hover {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        /* --- Main Layout --- */
+        main {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
             width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-            filter: blur(80px); /* Làm mờ mạnh để tạo nền màu loang */
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
         }
 
-        .blob {
-            position: absolute;
-            border-radius: 50%;
-            mix-blend-mode: screen;
-            opacity: 0.4;
-            animation: float 20s infinite ease-in-out alternate;
+        /* --- Sidebar Tabs --- */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
-        .blob-1 {
-            background: blue;
-            width: 500px; height: 500px;
-            top: -10%; left: -10%;
-            animation-delay: 0s;
-        }
-        .blob-2 {
-            background: purple;
-            width: 400px; height: 400px;
-            bottom: -10%; right: -10%;
-            animation-delay: -5s;
-        }
-        .blob-3 {
-            background: var(--accent-color);
-            width: 300px; height: 300px;
-            bottom: 20%; left: 30%;
-            animation-delay: -10s;
+        .tab-btn {
+            text-align: left;
+            padding: 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 0.95rem;
         }
 
-        /* Khối kính (Glassmorphism Card) */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.05); /* Nền trắng cực mỏng */
-            backdrop-filter: blur(20px); /* Hiệu ứng mờ kính */
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.1); /* Viền kính sáng nhẹ */
-            padding: 4rem 6rem;
-            text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            
-            /* Thiết lập cho hiệu ứng 3D tilt JS */
-            transform-style: preserve-3d;
-            transition: transform 0.1s ease-out; /* Chuyển động mượt mà */
-            position: relative;
+        .tab-btn:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+        .tab-btn.active {
+            background: var(--card-bg);
+            color: var(--accent);
+            font-weight: 600;
+            border-left: 3px solid var(--accent);
         }
+
+        /* --- Content Area --- */
+        .content-area {
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 2rem;
+            min-height: 500px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .panel { display: none; animation: fadeIn 0.3s ease; }
+        .panel.active { display: block; }
+
+        h2 { margin-top: 0; font-size: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.5rem; }
         
-        /* Hiệu ứng ánh sáng đi theo chuột trên thẻ kính */
-        .glass-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 24px;
-            background: radial-gradient(
-                800px circle at var(--mouse-x) var(--mouse-y), 
-                rgba(255,255,255,0.06),
-                transparent 40%
-            );
-            z-index: -1;
-            pointer-events: none;
+        /* --- Form Elements --- */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
-        .main-text {
-            font-size: 5rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            margin: 0;
-            letter-spacing: -2px;
-            text-transform: uppercase;
-            
-            /* Tạo hiệu ứng chữ nổi lên khỏi bề mặt kính */
-            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            transform: translateZ(60px); /* Đẩy chữ lồi lên phía trước trong không gian 3D */
-        }
-
-        .sub-text {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 1.2rem;
-            margin-top: 1.5rem;
-            font-weight: 400;
-            transform: translateZ(30px); /* Đẩy sub-text lồi lên nhẹ */
-            position: relative;
-        }
+        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        label { font-size: 0.85rem; color: var(--text-muted); }
         
-        .sub-text span {
-             color: var(--accent-color);
-             font-weight: 800;
+        input[type="number"], select {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--border);
+            padding: 0.75rem;
+            border-radius: 6px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.2s;
         }
 
-        @keyframes float {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            100% { transform: translate(100px, 50px) rotate(20deg); }
+        input[type="number"]:focus, select:focus {
+            border-color: var(--accent);
         }
+
+        /* --- Checkbox List for Scores --- */
+        .checklist {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.75rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .check-item:hover { background: rgba(255,255,255,0.05); }
+
+        input[type="checkbox"] {
+            accent-color: var(--accent);
+            width: 18px; height: 18px;
+        }
+
+        /* --- Results Box --- */
+        .result-box {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .result-row:last-child { border-bottom: none; margin-bottom: 0; }
+
+        .res-label { font-size: 0.9rem; color: var(--text-muted); }
+        .res-value { font-size: 1.25rem; font-weight: 700; color: var(--accent); }
         
-        /* Responsive cho mobile */
+        .risk-badge {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Utility classes for dynamic colors */
+        .text-danger { color: var(--danger) !important; }
+        .text-success { color: var(--success) !important; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Mobile Responsive */
         @media (max-width: 768px) {
-            .glass-card { padding: 3rem 2rem; }
-            .main-text { font-size: 3rem; }
+            main { grid-template-columns: 1fr; }
+            .sidebar { flex-direction: row; overflow-x: auto; padding-bottom: 10px; }
+            .tab-btn { white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; }
+            .tab-btn.active { border-left: none; border-bottom: 3px solid var(--accent); }
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-blobs">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-    </div>
+    <header>
+        <div class="brand">Dr. Assistant</div>
+        <button class="btn-login" onclick="toggleLogin(this)">Đăng nhập</button>
+    </header>
 
-    <div class="glass-card" id="tiltCard">
-        <h1 class="main-text">Sao cũng được</h1>
-        <p class="sub-text">Tâm bất biến giữa dòng đời <span>vạn biến</span></p>
-    </div>
+    <main>
+        <nav class="sidebar">
+            <button class="tab-btn active" onclick="switchTab('nephro')">Thận học (eGFR)</button>
+            <button class="tab-btn" onclick="switchTab('cardio-af')">Rung nhĩ (AF Scores)</button>
+            <button class="tab-btn" onclick="switchTab('settings')">Cài đặt</button>
+        </nav>
+
+        <div class="content-area">
+            
+            <div id="nephro" class="panel active">
+                <h2>Đánh giá chức năng thận</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Giới tính</label>
+                        <select id="gender" onchange="calcKidney()">
+                            <option value="male">Nam</option>
+                            <option value="female">Nữ</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tuổi (năm)</label>
+                        <input type="number" id="age" value="50" oninput="calcKidney()">
+                    </div>
+                    <div class="form-group">
+                        <label>Creatinine huyết thanh</label>
+                        <div style="display: flex; gap: 5px;">
+                            <input type="number" id="creatinine" value="1.0" step="0.1" oninput="calcKidney()" style="flex:1">
+                            <select id="unit" onchange="convertUnit()" style="width: 100px;">
+                                <option value="mgdl">mg/dL</option>
+                                <option value="umol">µmol/L</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-box">
+                    <div class="result-row">
+                        <span class="res-label">eGFR (CKD-EPI 2009)</span>
+                        <span class="res-value" id="res-ckd">--</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="res-label">eGFR (MDRD Study)</span>
+                        <span class="res-value" id="res-mdrd">--</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="res-label">Phân độ (KDIGO)</span>
+                        <span class="risk-badge" id="res-stage">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="cardio-af" class="panel">
+                <h2>Thang điểm Rung nhĩ</h2>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div>
+                        <h3 style="color: var(--accent); font-size: 1.1rem; margin-bottom: 1rem;">CHA₂DS₂-VASc</h3>
+                        <div class="checklist">
+                            <label class="check-item"><input type="checkbox" class="chad" value="1"> Suy tim sung huyết (C)</label>
+                            <label class="check-item"><input type="checkbox" class="chad" value="1"> Tăng huyết áp (H)</label>
+                            <label class="check-item"><input type="checkbox" class="chad" value="2"> Tuổi ≥ 75 (A₂)</label>
+                            <label class="check-item"><input type="checkbox" class="chad" value="1"> Đái tháo đường (D)</label>
+                            <label class="check-item"><input type="checkbox" class="chad" value="2"> Đột quỵ/TIA/Huyết khối (S₂)</label>
+                            <label class="check-item"><input type="checkbox" class="chad" value="1"> Bệnh mạch máu (V)</label>
+                            <label class="check-item"><input type="checkbox" class="chad" value="1"> Tuổi 65-74 (A)</label>
+                            <label class="check-item"><input type="checkbox" class="chad" value="1"> Giới tính Nữ (Sc)</label>
+                        </div>
+                        <div class="result-box" style="margin-top: 1rem; padding: 1rem;">
+                            <div class="result-row">
+                                <span class="res-label">Điểm số:</span>
+                                <span class="res-value" id="score-chad">0</span>
+                            </div>
+                            <small id="text-chad" style="color: var(--text-muted)">Nguy cơ đột quỵ thấp</small>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 style="color: #f472b6; font-size: 1.1rem; margin-bottom: 1rem;">HAS-BLED</h3>
+                        <div class="checklist">
+                            <label class="check-item"><input type="checkbox" class="has" value="1"> Tăng huyết áp (H)</label>
+                            <label class="check-item"><input type="checkbox" class="has" value="1"> Chức năng Thận bất thường (A)</label>
+                            <label class="check-item"><input type="checkbox" class="has" value="1"> Chức năng Gan bất thường (A)</label>
+                            <label class="check-item"><input type="checkbox" class="has" value="1"> Tiền sử Đột quỵ (S)</label>
+                            <label class="check-item"><input type="checkbox" class="has" value="1"> Tiền sử/Cơ địa chảy máu (B)</label>
+                            <label class="check-item"><input type="checkbox" class="has" value="1"> INR dao động (L)</label>
+                            <label class="check-item"><input type="checkbox" class="has" value="1"> Tuổi cao > 65 (E)</label>
+                            <label class="check-item"><input type="checkbox" class="has" value="1"> Dùng thuốc kháng tiểu cầu/NSAID (D)</label>
+                            <label class="check-item"><input type="checkbox" class="has" value="1"> Nghiện rượu (D)</label>
+                        </div>
+                        <div class="result-box" style="margin-top: 1rem; padding: 1rem;">
+                            <div class="result-row">
+                                <span class="res-label">Điểm số:</span>
+                                <span class="res-value" id="score-has">0</span>
+                            </div>
+                            <small id="text-has" style="color: var(--text-muted)">Nguy cơ chảy máu thấp</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="settings" class="panel">
+                <h2>Hệ thống</h2>
+                <p style="color: var(--text-muted)">Phiên bản v1.0.2 - Xây dựng cho nghiên cứu lâm sàng.</p>
+                <p>Designed with Digital Zen Philosophy.</p>
+            </div>
+
+        </div>
+    </main>
 
     <script>
-        // JAVASCRIPT XỬ LÝ TƯƠNG TÁC 3D
-        const card = document.getElementById('tiltCard');
-        const body = document.querySelector('body');
+        // --- LOGIC GIAO DIỆN ---
+        function switchTab(id) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
+        }
 
-        body.addEventListener('mousemove', (e) => {
-            // 1. Xử lý hiệu ứng ánh sáng đi theo chuột
-            // Lấy vị trí chuột tương đối so với thẻ card
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            card.style.setProperty('--mouse-x', `${x}px`);
-            card.style.setProperty('--mouse-y', `${y}px`);
+        function toggleLogin(btn) {
+            if(btn.innerText === "Đăng nhập") {
+                btn.innerText = "BS. Nguyen (Đăng xuất)";
+                btn.style.background = "var(--accent)";
+                btn.style.color = "var(--bg)";
+            } else {
+                btn.innerText = "Đăng nhập";
+                btn.style.background = "rgba(56, 189, 248, 0.1)";
+                btn.style.color = "var(--accent)";
+            }
+        }
 
-            // 2. Xử lý hiệu ứng nghiêng 3D (Parallax Tilt)
-            let xAxis = (window.innerWidth / 2 - e.clientX) / 25; // Chia để giảm độ nhạy
-            let yAxis = (window.innerHeight / 2 - e.clientY) / 25;
+        // --- LOGIC TÍNH TOÁN Y KHOA ---
+
+        // 1. eGFR Calculator
+        function convertUnit() {
+            let val = parseFloat(document.getElementById('creatinine').value);
+            let unit = document.getElementById('unit').value;
+            if (unit === 'umol') {
+                // mg to umol
+                document.getElementById('creatinine').value = (val * 88.4).toFixed(1);
+            } else {
+                // umol to mg
+                document.getElementById('creatinine').value = (val / 88.4).toFixed(2);
+            }
+            calcKidney();
+        }
+
+        function calcKidney() {
+            let gender = document.getElementById('gender').value;
+            let age = parseFloat(document.getElementById('age').value);
+            let crInput = parseFloat(document.getElementById('creatinine').value);
+            let unit = document.getElementById('unit').value;
             
-            // Giới hạn góc nghiêng để không bị quá đà
-            xAxis = Math.min(Math.max(xAxis, -20), 20);
-            yAxis = Math.min(Math.max(yAxis, -20), 20);
+            if(!age || !crInput) return;
 
-            card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+            // Normalize Creatinine to mg/dL for calculation
+            let scr = unit === 'umol' ? crInput / 88.4 : crInput;
+            let isFemale = gender === 'female';
+
+            // MDRD Formula (IDMS-traceable: 175)
+            // GFR = 175 * (Scr)^-1.154 * (Age)^-0.203 * (0.742 if female)
+            let mdrd = 175 * Math.pow(scr, -1.154) * Math.pow(age, -0.203);
+            if(isFemale) mdrd *= 0.742;
+
+            // CKD-EPI 2009 Formula
+            let k = isFemale ? 0.7 : 0.9;
+            let a = isFemale ? -0.329 : -0.411;
+            let min = Math.min(scr/k, 1);
+            let max = Math.max(scr/k, 1);
+            
+            let ckd = 141 * Math.pow(min, a) * Math.pow(max, -1.209) * Math.pow(0.993, age);
+            if(isFemale) ckd *= 1.018;
+            // Note: Assuming non-black for general VN population context
+
+            // Display
+            document.getElementById('res-mdrd').innerText = mdrd.toFixed(1) + " mL/min";
+            document.getElementById('res-ckd').innerText = ckd.toFixed(1) + " mL/min";
+
+            // Staging based on CKD-EPI
+            let stage = "";
+            let color = "";
+            if(ckd >= 90) { stage = "G1 - Bình thường"; color = "var(--success)"; }
+            else if(ckd >= 60) { stage = "G2 - Giảm nhẹ"; color = "#facc15"; } // Yellow
+            else if(ckd >= 45) { stage = "G3a - Giảm nhẹ-tb"; color = "#fb923c"; } // Orange
+            else if(ckd >= 30) { stage = "G3b - Giảm tb-nặng"; color = "#fb923c"; }
+            else if(ckd >= 15) { stage = "G4 - Giảm nặng"; color = "var(--danger)"; }
+            else { stage = "G5 - Suy thận"; color = "var(--danger)"; }
+
+            let badge = document.getElementById('res-stage');
+            badge.innerText = stage;
+            badge.style.color = color;
+            badge.style.border = `1px solid ${color}`;
+        }
+
+        // 2. CHA2DS2-VASc & HAS-BLED Calculator
+        document.querySelectorAll('.chad, .has').forEach(cb => {
+            cb.addEventListener('change', () => {
+                calcScores();
+            })
         });
 
-        // Khi chuột rời khỏi màn hình hoặc ngừng di chuyển, trả thẻ về vị trí cân bằng
-        body.addEventListener('mouseleave', () => {
-            card.style.transform = `rotateY(0deg) rotateX(0deg)`;
-            card.style.transition = 'transform 0.5s ease';
-        });
-        
-        // Reset transition khi di chuyển lại để tránh bị giật
-        body.addEventListener('mouseenter', () => {
-             card.style.transition = 'transform 0.1s ease-out';
-        });
+        function calcScores() {
+            // CHA2DS2-VASc
+            let scoreChad = 0;
+            document.querySelectorAll('.chad:checked').forEach(cb => scoreChad += parseInt(cb.value));
+            document.getElementById('score-chad').innerText = scoreChad;
+            
+            let textChad = scoreChad === 0 ? "Nguy cơ thấp" : (scoreChad === 1 ? "Nguy cơ trung bình" : "Nguy cơ cao (Xem xét OAC)");
+            document.getElementById('text-chad').innerText = textChad;
+            document.getElementById('text-chad').className = scoreChad >= 2 ? "text-danger" : "";
+
+            // HAS-BLED
+            let scoreHas = 0;
+            document.querySelectorAll('.has:checked').forEach(cb => scoreHas += parseInt(cb.value));
+            document.getElementById('score-has').innerText = scoreHas;
+
+            let textHas = scoreHas >= 3 ? "Nguy cơ chảy máu CAO (Theo dõi chặt)" : "Nguy cơ chảy máu thấp/tb";
+            document.getElementById('text-has').innerText = textHas;
+            document.getElementById('text-has').className = scoreHas >= 3 ? "text-danger" : "";
+        }
+
+        // Init calc on load
+        calcKidney();
 
     </script>
 </body>
